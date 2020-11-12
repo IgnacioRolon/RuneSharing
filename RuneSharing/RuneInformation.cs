@@ -128,7 +128,7 @@ namespace RuneSharing
             flexDictionary.Add("10% AS", 5005);
             flexDictionary.Add("+6 AR", 5002);
             flexDictionary.Add("+15-90 HP", 5001);
-            flexDictionary.Add("+1-10% CDR", 5007);
+            flexDictionary.Add("+8 AH", 5007);
             flexDictionary.Add("+8 MR", 5003);         
 
             styleDictionary.Add("Precision", 8000);

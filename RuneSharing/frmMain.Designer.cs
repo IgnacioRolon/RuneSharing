@@ -73,6 +73,7 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.label15 = new System.Windows.Forms.Label();
             this.cbSec6 = new System.Windows.Forms.ComboBox();
+            this.btnImportRunes = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -266,7 +267,7 @@
             // 
             this.btnExport.Location = new System.Drawing.Point(416, 22);
             this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(102, 23);
+            this.btnExport.Size = new System.Drawing.Size(112, 23);
             this.btnExport.TabIndex = 19;
             this.btnExport.Text = "Export to League";
             this.btnExport.UseVisualStyleBackColor = true;
@@ -302,7 +303,7 @@
             // 
             this.btnImportSeed.Location = new System.Drawing.Point(416, 67);
             this.btnImportSeed.Name = "btnImportSeed";
-            this.btnImportSeed.Size = new System.Drawing.Size(102, 23);
+            this.btnImportSeed.Size = new System.Drawing.Size(112, 23);
             this.btnImportSeed.TabIndex = 23;
             this.btnImportSeed.Text = "Import Seed";
             this.btnImportSeed.UseVisualStyleBackColor = true;
@@ -346,10 +347,10 @@
             this.rbCdr1.AutoSize = true;
             this.rbCdr1.Location = new System.Drawing.Point(155, 20);
             this.rbCdr1.Name = "rbCdr1";
-            this.rbCdr1.Size = new System.Drawing.Size(86, 17);
+            this.rbCdr1.Size = new System.Drawing.Size(55, 17);
             this.rbCdr1.TabIndex = 27;
             this.rbCdr1.TabStop = true;
-            this.rbCdr1.Text = "+1-10% CDR";
+            this.rbCdr1.Text = "+8 AH";
             this.rbCdr1.UseVisualStyleBackColor = true;
             this.rbCdr1.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
             // 
@@ -505,7 +506,7 @@
             // 
             this.btnClear.Location = new System.Drawing.Point(24, 106);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(121, 23);
+            this.btnClear.Size = new System.Drawing.Size(170, 23);
             this.btnClear.TabIndex = 41;
             this.btnClear.Text = "Clear Rune Page";
             this.btnClear.UseVisualStyleBackColor = true;
@@ -531,11 +532,24 @@
             this.cbSec6.SelectedIndexChanged += new System.EventHandler(this.cbSec6_SelectedIndexChanged);
             this.cbSec6.Click += new System.EventHandler(this.cbSec6_Click);
             // 
+            // btnImportRunes
+            // 
+            this.btnImportRunes.Enabled = false;
+            this.btnImportRunes.Location = new System.Drawing.Point(240, 106);
+            this.btnImportRunes.Name = "btnImportRunes";
+            this.btnImportRunes.Size = new System.Drawing.Size(170, 23);
+            this.btnImportRunes.TabIndex = 44;
+            this.btnImportRunes.Text = "Import from League";
+            this.btnImportRunes.UseVisualStyleBackColor = true;
+            this.btnImportRunes.Click += new System.EventHandler(this.btnImportRunes_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(530, 450);
+            this.BackColor = System.Drawing.SystemColors.Control;
+            this.ClientSize = new System.Drawing.Size(540, 450);
+            this.Controls.Add(this.btnImportRunes);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.cbSec6);
             this.Controls.Add(this.btnClear);
@@ -629,6 +643,7 @@
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.ComboBox cbSec6;
+        private System.Windows.Forms.Button btnImportRunes;
     }
 }
 

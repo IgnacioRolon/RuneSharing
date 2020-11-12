@@ -206,7 +206,7 @@ namespace RuneSharing
             {                
                 if (radio.Checked == true)
                 {
-                    flexRunes[0] = runeData.flexDictionary[radio.Text];
+                    flexRunes[0] = runeData.GetFlexId(radio.Text);
                     break;
                 }
             }
@@ -216,7 +216,7 @@ namespace RuneSharing
             {
                 if (radio.Checked == true)
                 {
-                    flexRunes[1] = runeData.flexDictionary[radio.Text];
+                    flexRunes[1] = runeData.GetFlexId(radio.Text);
                     break;
                 }
             }
@@ -226,7 +226,7 @@ namespace RuneSharing
             {
                 if (radio.Checked == true)
                 {
-                    flexRunes[2] = runeData.flexDictionary[radio.Text];
+                    flexRunes[2] = runeData.GetFlexId(radio.Text);
                     break;
                 }
             }
@@ -241,27 +241,13 @@ namespace RuneSharing
                 sec5
             };
 
-            int[] selectedIds = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //This array contains 9 empty slots to be filled with the corresponding IDs.
-            int i = 0;
-            foreach (Runes rune in runeData.runeList)
-            {
-                if(selectedRunes.Contains(rune.runeName))
-                {
-                    selectedIds[i] = rune.runeId;
-                    i++;
-                }
-            }
-
-            foreach(int flexRune in flexRunes)
-            {
-                selectedIds[i] = flexRune;
-                i++;
-            }
+            int[] selectedIds = {runeData.GetRuneId(cbKeystone.Text), runeData.GetRuneId(cbSec1.Text), runeData.GetRuneId(cbSec2.Text), runeData.GetRuneId(cbSec3.Text),
+                                 runeData.GetRuneId(sec4), runeData.GetRuneId(sec5), flexRunes[0], flexRunes[1], flexRunes[2]}; //This array contains the corresponding IDs           
 
             runes.selectedPerkIds = selectedIds;
             runes.name = cbRunePage.Text;
-            runes.primaryStyleId = runeData.styleDictionary[cbMainPath.Text];
-            runes.subStyleId = runeData.styleDictionary[cbSecPath.Text];
+            runes.primaryStyleId = runeData.GetStyleId(cbMainPath.Text);
+            runes.subStyleId = runeData.GetStyleId(cbSecPath.Text);
         }        
 
         void LoadChampionList()
@@ -279,10 +265,9 @@ namespace RuneSharing
             {
                 cbSec6.Items.Add("");
                 cbSec6.Text = "";
-                cbSec6.Items.Remove("");
-
-                GenerateSeed();
+                cbSec6.Items.Remove("");                
             }
+            GenerateSeed();
         }
 
         private void cbSec5_SelectedIndexChanged(object sender, EventArgs e)
@@ -291,10 +276,9 @@ namespace RuneSharing
             {
                 cbSec6.Items.Add("");
                 cbSec6.Text = "";
-                cbSec6.Items.Remove("");
-
-                GenerateSeed();
+                cbSec6.Items.Remove("");                
             }
+            GenerateSeed();
         }
 
         private void cbSec6_SelectedIndexChanged(object sender, EventArgs e)
@@ -303,10 +287,9 @@ namespace RuneSharing
             {
                 cbSec5.Items.Add("");
                 cbSec5.Text = "";
-                cbSec5.Items.Remove("");
-
-                GenerateSeed();
+                cbSec5.Items.Remove("");                
             }
+            GenerateSeed();
         }
 
         private void cbSec6_Click(object sender, EventArgs e)
@@ -327,23 +310,86 @@ namespace RuneSharing
         private void btnSave_Click(object sender, EventArgs e)
         {
             if(txtSeed.Text != "")
-            {
+            {                
+                SeedFile tempSeed = fileSeeds.Find(delegate (SeedFile seed)
+                {
+                    return seed.pageName == cbRunePage.Text;
+                });
+
                 if (!File.Exists(runePageDataPath))
                 {
                     File.Create(runePageDataPath);
                 }
 
-                StreamWriter file = File.AppendText(runePageDataPath);
-                file.WriteLine(txtSeed.Text);
-                file.Close();
-
-                fileSeeds.Add(new SeedFile(cbRunePage.Text, cbChampions.Text, new RuneSeed(txtSeed.Text)));
-                cbRunePage.Items.Add(cbRunePage.Text);
+                if(tempSeed != null) //If that runepage already exists
+                {
+                    if(MessageBox.Show("A page with this name already exists. Do you want to replace it?", "Repeated Page", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        if(!EmptyFile())
+                        {
+                            MessageBox.Show("Error saving the Rune Page. Opening this app as administrator may solve this error.", "Error Saving", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        else
+                        {
+                            int seedIndex = fileSeeds.IndexOf(tempSeed);
+                            fileSeeds[seedIndex] = new SeedFile(cbRunePage.Text, cbChampions.Text, new RuneSeed(txtSeed.Text));
+                            foreach (SeedFile seed in this.fileSeeds)
+                            {
+                                SaveToFileAppend(seed.seed.GetSeed());
+                            }                            
+                        }
+                        
+                    }
+                }
+                else
+                {
+                    if (!SaveToFileAppend(txtSeed.Text))
+                    {
+                        MessageBox.Show("Error saving the Rune Page. Opening this app as administrator may solve this error.", "Error Saving", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    else
+                    {
+                        fileSeeds.Add(new SeedFile(cbRunePage.Text, cbChampions.Text, new RuneSeed(txtSeed.Text)));
+                        cbRunePage.Items.Add(cbRunePage.Text);
+                    }
+                }
+                //If any of the changes were succesful, this will show                
+                MessageBox.Show($"Runes saved! Name: {cbRunePage.Text}.", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }            
         }
 
-        private void ReadRunePages()
+        private bool SaveToFileAppend(string seedString)
+        {           
+            StreamWriter file = File.AppendText(runePageDataPath);
+            try
+            {
+                file.WriteLine(seedString);
+                file.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                file.Close();
+                return false;                
+            }
+        }
+
+        private bool EmptyFile()
         {
+            try
+            {
+                File.WriteAllText(runePageDataPath, "");
+                return true;
+            }catch(Exception)
+            {
+                return false;
+            }
             
         }
 
@@ -491,7 +537,7 @@ namespace RuneSharing
                 case "10% AS":
                     rbAs1.Checked = true;
                     break;
-                case "+1-10% CDR":
+                case "+8 AH":
                     rbCdr1.Checked = true;
                     break;
             }
@@ -613,7 +659,7 @@ namespace RuneSharing
             cbRunePage.Text = "";
             foreach(SeedFile runePage in fileSeeds)
             {
-                if(runePage.championName == cbChampions.Text)
+                if(runePage.championName == cbChampions.Text || cbChampions.Text == "Any Champion")
                 {
                     cbRunePage.Items.Add(runePage.pageName);
                 }                
@@ -657,6 +703,11 @@ namespace RuneSharing
                     break;
                 }
             }
+        }
+
+        private async void btnImportRunes_Click(object sender, EventArgs e)
+        {
+            runes = await connector.APICall(LCUConnector.RequestType.GET, "lol-perks/v1/currentpage", null);
         }
     }
 }

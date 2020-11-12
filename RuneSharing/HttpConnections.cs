@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Newtonsoft.Json;
 
 namespace RuneSharing
 {
@@ -43,7 +44,7 @@ namespace RuneSharing
 
         public static async Task<Uri> PostRunesAsync(string request, RunePage runes)
         {
-            HttpResponseMessage response = await client.PostAsJsonAsync(request, runes);
+            HttpResponseMessage response = await client.PostAsJsonAsync(request, runes);            
             response.EnsureSuccessStatusCode();
 
             // return URI of the created resource.
